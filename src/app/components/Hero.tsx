@@ -4,23 +4,23 @@ import { ImageWithFallback } from "./figma/ImageWithFallback";
 export function Hero() {
   const slides = [
     {
-      image: "src/img/0A21CDB8-6EE7-4476-8C2D-82D9DE6FBBA72024-04-13_15-57-03_746.jpeg",
+      image: "public/img/0A21CDB8-6EE7-4476-8C2D-82D9DE6FBBA72024-04-13_15-57-03_746.jpeg",
       alt: "No_1",
     },
     {
-      image: "src/img/80E1B04E-8E9A-46D8-A448-4D0F18037DF72025-12-21_14-07-06_993.jpeg",
+      image: "public/img/80E1B04E-8E9A-46D8-A448-4D0F18037DF72025-12-21_14-07-06_993.jpeg",
       alt: "No_2",
     },
     {
-      image: "src/img/E7854AD6-B3F1-4AD1-8A1F-198C3410FEC32025-12-15_16-52-57_144.jpeg",
+      image: "public/img/E7854AD6-B3F1-4AD1-8A1F-198C3410FEC32025-12-15_16-52-57_144.jpeg",
       alt: "No_3",
     },
     {
-      image: "src/img/image.jpeg",
+      image: "public/img/image.jpeg",
       alt: "No_4",
     },
     {
-      image: "src/img/IMG_3945.JPG",
+      image: "public/img/IMG_3945.JPG",
       alt: "No_5",
     },
   ];
