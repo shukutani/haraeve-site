@@ -1,17 +1,21 @@
-import { Calendar, Gamepad2 } from "lucide-react";
+import { Calendar, Gamepad2, UserCheck } from "lucide-react";
 
 export function Activities() {
   const activities = [
     {
-      icon: Calendar,
-      title: "定期開催会",
-      description: "毎週土曜日、14:00-18:00に定例会を開催しています。",
-      details: ["初心者向けゲーム会", "経験者向け戦略ゲーム会", "テーマ別イベント"],
+      icon: UserCheck,
+      title: "ボードゲームイベント",
+      description: "毎月1回、週末の午後（土・日 14:00〜17:00）に開催",
+      details: [
+        "各テーブルで運営スタッフが、ルール説明や進行をサポート",
+        "会話や交流を楽しめる雰囲気を大切にしています。",
+        "お酒を飲みながらボードゲームを楽しめます。",
+      ],
     },
     {
       icon: Gamepad2,
       title: "豊富なゲームライブラリ",
-      description: "100種類以上のボードゲームを取り揃えています。",
+      description: "幅広いジャンルのボードゲームを豊富に取り揃えています！",
       details: ["協力ゲーム", "戦略ゲーム", "パーティーゲーム"],
     },
   ];

@@ -140,9 +140,6 @@ export function Guide() {
                   <div className="flex-1 rounded-2xl bg-white p-4 md:p-6 shadow-sm border border-orange-100">
                     <div className="mb-2 text-lg md:text-xl text-orange-600">17:00</div>
                     <h4 className="mb-2 text-xl md:text-2xl text-slate-800">ボードゲーム会終了</h4>
-                    <p className="text-sm md:text-base text-slate-600">
-                      お疲れ様でした！片付けにご協力ください
-                    </p>
                   </div>
                 </div>
 

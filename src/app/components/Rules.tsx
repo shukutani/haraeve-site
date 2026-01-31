@@ -21,17 +21,13 @@ export function Rules() {
             <h3 className="text-xl md:text-2xl text-blue-800">安心してご参加ください</h3>
           </div>
           <p className="leading-relaxed text-sm md:text-base mb-4 text-slate-700">
-            ハライベでは、すべての参加者が安心して楽しめる環境づくりを最優先にしています。
+            すべての参加者が安心して楽しめる環境づくりを最優先にしています。<br />
             性別、年齢、経験を問わず、誰もが歓迎される居心地の良い空間を提供します。
           </p>
           <div className="grid gap-3 sm:grid-cols-2 text-sm md:text-base text-slate-700">
             <div className="flex items-start gap-2">
               <div className="h-1.5 w-1.5 rounded-full bg-blue-600 shrink-0 mt-2" />
               <p>スタッフが常駐してサポート</p>
-            </div>
-            <div className="flex items-start gap-2">
-              <div className="h-1.5 w-1.5 rounded-full bg-blue-600 shrink-0 mt-2" />
-              <p>緊急時の連絡体制を完備</p>
             </div>
             <div className="flex items-start gap-2">
               <div className="h-1.5 w-1.5 rounded-full bg-blue-600 shrink-0 mt-2" />
