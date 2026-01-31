@@ -59,7 +59,7 @@ export function Hero() {
 
         {/* Content Overlay */}
         <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
-          <div className="bg-orange-100/80 backdrop-blur-sm rounded-3xl px-8 py-10 md:px-12 md:py-14 shadow-xl text-center">
+          <div className="bg-orange-100/50 backdrop-blur-sm rounded-3xl px-8 py-10 md:px-8 md:py-8 shadow-xl text-center">
             <h1 className="mb-4 sm:mb-6 text-4xl sm:text-5xl md:text-6xl lg:text-7xl text-slate-900" style={{ fontFamily: "'M PLUS Rounded 1c', sans-serif" }}>
               はらだのいべんと
             </h1>
