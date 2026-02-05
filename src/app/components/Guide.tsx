@@ -1,4 +1,4 @@
-import { Smartphone, MapPin, Clock, Users, PartyPopper, Coffee, Droplets, Utensils, Gamepad2 } from "lucide-react";
+import { Smartphone, MapPin, Clock, Users, PartyPopper, Coffee, Droplets, Utensils, Gamepad2, ExternalLink } from "lucide-react";
 
 export function Guide() {
   return (
@@ -28,9 +28,18 @@ export function Guide() {
                 <h4 className="text-xl md:text-2xl text-slate-800 mb-2">
                   「つなゲート」アプリで申し込み
                 </h4>
-                <p className="text-sm md:text-base text-slate-600">
-                  アプリをダウンロードして、ハライベのイベントページからお申し込みください
+                <p className="text-sm md:text-base text-slate-600 mb-4">
+                  「はらだのイベント」イベントページからお申し込みください
                 </p>
+                <a
+                  href="https://tunagate.com/circle/85672/member_invitations/KjpoaYpn"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="inline-flex items-center gap-2 bg-gradient-to-r from-orange-500 to-amber-500 hover:from-orange-600 hover:to-amber-600 text-white px-6 py-3 rounded-full shadow-md hover:shadow-lg transition-all duration-200 text-sm md:text-base font-medium"
+                >
+                  つなゲートで申し込む
+                  <ExternalLink className="h-5 w-5" />
+                </a>
               </div>
             </div>
 
