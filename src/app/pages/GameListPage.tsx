@@ -8,10 +8,10 @@ import {
   Users,
   ChevronLeft,
 } from "lucide-react";
-import { supabase } from "../../lib/supabase";
+import { supabase } from "../lib/supabase";
 
 /* =====================
-   型定義（Supabase）
+   型定義
 ===================== */
 type Game = {
   id: string;
@@ -20,7 +20,7 @@ type Game = {
   player_count: string;
   difficulty: number;
   summary: string;
-  thumbnail_url: string | null;
+  image_urls: string[] | null;
 };
 
 type SortKey = "title" | "play_time" | "player_count" | "difficulty";
@@ -45,18 +45,14 @@ export function GameListPage() {
   ===================== */
   useEffect(() => {
     const fetchGames = async () => {
-      const { data, error } = await supabase
-        .from("games")
-        .select("*");
-
-      console.log("games data:", data);
-      console.log("games error:", error);
+      const { data, error } = await supabase.from("games").select("*");
 
       if (error) {
-        console.error(error);
+        console.error("Supabase error:", error);
       } else {
         setGames(data ?? []);
       }
+
       setLoading(false);
     };
 
@@ -64,7 +60,7 @@ export function GameListPage() {
   }, []);
 
   /* =====================
-     ソート処理
+     ソート
   ===================== */
   const handleSort = (key: SortKey) => {
     if (sortKey === key) {
@@ -79,7 +75,7 @@ export function GameListPage() {
      検索 & ソート
   ===================== */
   const filteredAndSortedGames = useMemo(() => {
-    let filtered = games.filter((game) =>
+    const filtered = games.filter((game) =>
       game.title.toLowerCase().includes(searchQuery.toLowerCase())
     );
 
@@ -107,9 +103,10 @@ export function GameListPage() {
     return filtered;
   }, [games, searchQuery, sortKey, sortDirection]);
 
-  const displayedGames = useMemo(() => {
-    return filteredAndSortedGames.slice(0, itemsPerPage);
-  }, [filteredAndSortedGames, itemsPerPage]);
+  const displayedGames = useMemo(
+    () => filteredAndSortedGames.slice(0, itemsPerPage),
+    [filteredAndSortedGames, itemsPerPage]
+  );
 
   /* =====================
      その他
@@ -132,6 +129,13 @@ export function GameListPage() {
       ))}
     </div>
   );
+
+  const getThumbnailUrl = (game: Game) => {
+    if (game.image_urls && game.image_urls.length > 0) {
+      return game.image_urls[0];
+    }
+    return "https://placehold.co/100x100?text=No+Image";
+  };
 
   if (loading) {
     return <div className="p-12 text-center">読み込み中...</div>;
@@ -189,22 +193,28 @@ export function GameListPage() {
           <table className="w-full">
             <thead className="bg-orange-100">
               <tr>
-                <th onClick={() => handleSort("title")} className="px-4 py-4">
-                  タイトル
+                <th className="hidden md:table-cell px-4 py-4"></th>
+                <th
+                  onClick={() => handleSort("title")}
+                  className="px-4 py-4 cursor-pointer"
+                >
+                  タイトル <ArrowUpDown className="inline h-4 w-4" />
                 </th>
-                <th className="hidden md:table-cell px-4 py-4">画像</th>
-                <th onClick={() => handleSort("play_time")} className="px-4 py-4">
+                <th
+                  onClick={() => handleSort("play_time")}
+                  className="px-4 py-4 cursor-pointer"
+                >
                   <Clock className="inline h-4 w-4" /> 時間
                 </th>
                 <th
                   onClick={() => handleSort("player_count")}
-                  className="px-4 py-4"
+                  className="px-4 py-4 cursor-pointer"
                 >
                   <Users className="inline h-4 w-4" /> 人数
                 </th>
                 <th
                   onClick={() => handleSort("difficulty")}
-                  className="px-4 py-4"
+                  className="px-4 py-4 cursor-pointer"
                 >
                   難易度
                 </th>
@@ -219,24 +229,39 @@ export function GameListPage() {
                   onClick={() => handleRowClick(game.id)}
                   className="hover:bg-orange-50 cursor-pointer"
                 >
-                  <td className="px-4 py-4 text-orange-600 font-medium">
-                    {game.title}
-                  </td>
+                  {/* 画像 */}
                   <td className="px-4 py-4 hidden md:table-cell">
                     <img
-                      src={
-                        game.thumbnail_url ??
-                        "https://placehold.co/100x100?text=No+Image"
-                      }
+                      src={getThumbnailUrl(game)}
                       alt={game.title}
                       className="w-16 h-16 object-cover rounded-lg"
                     />
                   </td>
-                  <td className="px-4 py-4">{game.play_time}</td>
-                  <td className="px-4 py-4">{game.player_count}</td>
-                  <td className="px-4 py-4">{renderStars(game.difficulty)}</td>
+
+                  {/* タイトル */}
+                  <td className="px-4 py-4">
+                    <div className="text-lg font-bold text-orange-600 leading-tight">
+                      {game.title}
+                    </div>
+                  </td>
+
+                  <td className="px-4 py-4 whitespace-nowrap">
+                    {game.play_time}
+                  </td>
+
+                  <td className="px-4 py-4 whitespace-nowrap">
+                    {game.player_count}
+                  </td>
+
+                  <td className="px-4 py-4">
+                    {renderStars(game.difficulty)}
+                  </td>
+
+                  {/* 概要 */}
                   <td className="px-4 py-4 hidden lg:table-cell">
-                    {game.summary}
+                    <p className="text-sm text-slate-600 max-w-xs truncate">
+                      {game.summary}
+                    </p>
                   </td>
                 </tr>
               ))}
