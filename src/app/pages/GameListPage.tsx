@@ -9,20 +9,7 @@ import {
   ChevronLeft,
 } from "lucide-react";
 import { supabase } from "../lib/supabase";
-
-/* =====================
-   型定義
-===================== */
-type Game = {
-  id: string;
-  title: string;
-  play_time: string;
-  player_count: string;
-  difficulty: number;
-  summary: string;
-  image_urls: string[] | null;
-};
-
+import { Game } from "../types/game";
 type SortKey = "title" | "play_time" | "player_count" | "difficulty";
 type SortDirection = "asc" | "desc";
 
@@ -191,9 +178,10 @@ export function GameListPage() {
         {/* Table */}
         <div className="bg-white rounded-2xl shadow overflow-x-auto">
           <table className="w-full">
-            <thead className="bg-orange-100">
+            {/* PC用ヘッダー */}
+            <thead className="bg-orange-100 hidden md:table-header-group">
               <tr>
-                <th className="hidden md:table-cell px-4 py-4"></th>
+                <th className="px-4 py-4"></th>
                 <th
                   onClick={() => handleSort("title")}
                   className="px-4 py-4 cursor-pointer"
@@ -224,46 +212,59 @@ export function GameListPage() {
 
             <tbody>
               {displayedGames.map((game) => (
-                <tr
-                  key={game.id}
-                  onClick={() => handleRowClick(game.id)}
-                  className="hover:bg-orange-50 cursor-pointer"
-                >
-                  {/* 画像 */}
-                  <td className="px-4 py-4 hidden md:table-cell">
-                    <img
-                      src={getThumbnailUrl(game)}
-                      alt={game.title}
-                      className="w-16 h-16 object-cover rounded-lg"
-                    />
-                  </td>
+                <>
+                  {/* スマホ表示：タイトルのみ */}
+                  <tr
+                    key={game.id}
+                    onClick={() => handleRowClick(game.id)}
+                    className="md:hidden border-b hover:bg-orange-50"
+                  >
+                    <td className="px-4 py-4">
+                      <div className="text-lg font-bold text-orange-600">
+                        {game.title}
+                      </div>
+                    </td>
+                  </tr>
 
-                  {/* タイトル */}
-                  <td className="px-4 py-4">
-                    <div className="text-lg font-bold text-orange-600 leading-tight">
-                      {game.title}
-                    </div>
-                  </td>
+                  {/* PC表示：フル情報 */}
+                  <tr
+                    key={`${game.id}-desktop`}
+                    onClick={() => handleRowClick(game.id)}
+                    className="hidden md:table-row hover:bg-orange-50 cursor-pointer"
+                  >
+                    <td className="px-4 py-4">
+                      <img
+                        src={getThumbnailUrl(game)}
+                        alt={game.title}
+                        className="w-16 h-16 object-cover rounded-lg"
+                      />
+                    </td>
 
-                  <td className="px-4 py-4 whitespace-nowrap">
-                    {game.play_time}
-                  </td>
+                    <td className="px-4 py-4">
+                      <div className="text-lg font-bold text-orange-600">
+                        {game.title}
+                      </div>
+                    </td>
 
-                  <td className="px-4 py-4 whitespace-nowrap">
-                    {game.player_count}
-                  </td>
+                    <td className="px-4 py-4 whitespace-nowrap">
+                      {game.play_time}
+                    </td>
 
-                  <td className="px-4 py-4">
-                    {renderStars(game.difficulty)}
-                  </td>
+                    <td className="px-4 py-4 whitespace-nowrap">
+                      {game.player_count}
+                    </td>
 
-                  {/* 概要 */}
-                  <td className="px-4 py-4 hidden lg:table-cell">
-                    <p className="text-sm text-slate-600 max-w-xs truncate">
-                      {game.summary}
-                    </p>
-                  </td>
-                </tr>
+                    <td className="px-4 py-4">
+                      {renderStars(game.difficulty)}
+                    </td>
+
+                    <td className="px-4 py-4 hidden lg:table-cell">
+                      <p className="text-sm text-slate-600 max-w-xs truncate">
+                        {game.summary}
+                      </p>
+                    </td>
+                  </tr>
+                </>
               ))}
             </tbody>
           </table>
