@@ -13,12 +13,12 @@ import remarkGfm from "remark-gfm";
 import rehypeRaw from "rehype-raw";
 
 import { supabase } from "../lib/supabase";
-import type { Game } from "../types/game";
+import type { GameDetail } from "../types/game";
 
 export function GameDetailPage() {
   const { id } = useParams<{ id: string }>();
 
-  const [game, setGame] = useState<Game | null>(null);
+  const [game, setGame] = useState<GameDetail | null>(null);
   const [loading, setLoading] = useState(true);
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
 
