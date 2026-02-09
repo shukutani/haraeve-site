@@ -14,6 +14,9 @@ import { Game } from "../types/game";
 type SortKey = "title" | "play_time" | "player_count" | "difficulty";
 type SortDirection = "asc" | "desc";
 
+/* =====================
+   Component
+===================== */
 export function GameListPage() {
   const navigate = useNavigate();
 
@@ -31,9 +34,16 @@ export function GameListPage() {
   useEffect(() => {
     const fetchGames = async () => {
       const { data, error } = await supabase.from("games").select("*");
-      if (!error) setGames(data ?? []);
+
+      if (error) {
+        console.error("Supabase error:", error);
+      } else {
+        setGames(data ?? []);
+      }
+
       setLoading(false);
     };
+
     fetchGames();
   }, []);
 
@@ -59,6 +69,7 @@ export function GameListPage() {
 
     filtered.sort((a, b) => {
       let comparison = 0;
+
       switch (sortKey) {
         case "title":
           comparison = a.title.localeCompare(b.title, "ja");
@@ -73,6 +84,7 @@ export function GameListPage() {
           comparison = a.player_count.localeCompare(b.player_count);
           break;
       }
+
       return sortDirection === "asc" ? comparison : -comparison;
     });
 
@@ -85,8 +97,12 @@ export function GameListPage() {
   );
 
   /* =====================
-     util
+     その他
   ===================== */
+  const handleRowClick = (gameId: string) => {
+    navigate(`/games/${gameId}`);
+  };
+
   const renderStars = (difficulty: number) => (
     <div className="flex gap-1">
       {[1, 2, 3, 4, 5].map((star) => (
@@ -102,14 +118,20 @@ export function GameListPage() {
     </div>
   );
 
-  const getThumbnailUrl = (game: Game) =>
-    game.image_urls?.[0] ??
-    "https://placehold.co/200x200?text=No+Image";
+  const getThumbnailUrl = (game: Game) => {
+    if (game.image_urls && game.image_urls.length > 0) {
+      return game.image_urls[0];
+    }
+    return "https://placehold.co/100x100?text=No+Image";
+  };
 
   if (loading) {
     return <div className="p-12 text-center">読み込み中...</div>;
   }
 
+  /* =====================
+     JSX
+  ===================== */
   return (
     <div className="min-h-screen bg-gradient-to-b from-orange-50 via-amber-50 to-yellow-50">
       {/* Header */}
@@ -154,47 +176,52 @@ export function GameListPage() {
           </select>
         </div>
 
-        {/* =====================
-            スマホ：カードUI
-        ===================== */}
+        {/* ===== スマホ：カードUI ===== */}
         <div className="md:hidden space-y-4">
           {displayedGames.map((game) => (
             <div
               key={game.id}
-              onClick={() => navigate(`/games/${game.id}`)}
-              className="bg-white rounded-2xl shadow p-4 flex gap-4 active:scale-[0.98]"
+              onClick={() => handleRowClick(game.id)}
+              className="bg-white rounded-xl shadow p-4 cursor-pointer hover:bg-orange-50"
             >
-              <img
-                src={getThumbnailUrl(game)}
-                alt={game.title}
-                className="w-24 h-24 object-cover rounded-xl"
-              />
+              <div className="flex gap-4">
+                <img
+                  src={getThumbnailUrl(game)}
+                  alt={game.title}
+                  className="w-20 h-20 object-cover rounded-lg flex-shrink-0"
+                />
 
-              <div className="flex-1">
-                <h2 className="text-lg font-bold text-orange-600 mb-1">
-                  {game.title}
-                </h2>
+                <div className="flex-1">
+                  <h2 className="text-lg font-bold text-orange-600">
+                    {game.title}
+                  </h2>
 
-                <div className="text-sm text-slate-600 flex flex-col gap-1">
-                  <span className="flex items-center gap-1">
-                    <Clock className="h-4 w-4" />
-                    {game.play_time}
-                  </span>
-                  <span className="flex items-center gap-1">
-                    <Users className="h-4 w-4" />
-                    {game.player_count}
-                  </span>
+                  <div className="mt-2 space-y-1 text-sm text-slate-600">
+                    <div className="flex items-center gap-2">
+                      <Clock className="h-4 w-4" />
+                      <span>{game.play_time}</span>
+                    </div>
+
+                    <div className="flex items-center gap-2">
+                      <Users className="h-4 w-4" />
+                      <span>{game.player_count}</span>
+                    </div>
+
+                    {/* 難易度：ラベルを星の左に */}
+                    <div className="flex items-center gap-2">
+                      <span className="text-xs text-slate-500">
+                        難易度
+                      </span>
+                      {renderStars(game.difficulty)}
+                    </div>
+                  </div>
                 </div>
-
-                <div className="mt-2">{renderStars(game.difficulty)}</div>
               </div>
             </div>
           ))}
         </div>
 
-        {/* =====================
-            md以上：テーブルUI
-        ===================== */}
+        {/* ===== PC：テーブルUI ===== */}
         <div className="hidden md:block bg-white rounded-2xl shadow overflow-x-auto">
           <table className="w-full">
             <thead className="bg-orange-100">
@@ -232,25 +259,37 @@ export function GameListPage() {
               {displayedGames.map((game) => (
                 <tr
                   key={game.id}
-                  onClick={() => navigate(`/games/${game.id}`)}
+                  onClick={() => handleRowClick(game.id)}
                   className="hover:bg-orange-50 cursor-pointer"
                 >
                   <td className="px-4 py-4">
                     <img
                       src={getThumbnailUrl(game)}
-                      className="w-16 h-16 rounded-lg object-cover"
+                      alt={game.title}
+                      className="w-16 h-16 object-cover rounded-lg"
                     />
                   </td>
+
                   <td className="px-4 py-4 font-bold text-orange-600">
                     {game.title}
                   </td>
-                  <td className="px-4 py-4">{game.play_time}</td>
-                  <td className="px-4 py-4">{game.player_count}</td>
+
+                  <td className="px-4 py-4 whitespace-nowrap">
+                    {game.play_time}
+                  </td>
+
+                  <td className="px-4 py-4 whitespace-nowrap">
+                    {game.player_count}
+                  </td>
+
                   <td className="px-4 py-4">
                     {renderStars(game.difficulty)}
                   </td>
-                  <td className="px-4 py-4 hidden lg:table-cell text-sm text-slate-600 max-w-xs truncate">
-                    {game.summary}
+
+                  <td className="px-4 py-4 hidden lg:table-cell">
+                    <p className="text-sm text-slate-600 max-w-xs truncate">
+                      {game.summary}
+                    </p>
                   </td>
                 </tr>
               ))}
