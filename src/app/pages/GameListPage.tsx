@@ -10,6 +10,7 @@ import {
 } from "lucide-react";
 import { supabase } from "../lib/supabase";
 import { Game } from "../types/game";
+
 type SortKey = "title" | "play_time" | "player_count" | "difficulty";
 type SortDirection = "asc" | "desc";
 
@@ -175,11 +176,55 @@ export function GameListPage() {
           </select>
         </div>
 
-        {/* Table */}
-        <div className="bg-white rounded-2xl shadow overflow-x-auto">
+        {/* ===== スマホ：カードUI ===== */}
+        <div className="md:hidden space-y-4">
+          {displayedGames.map((game) => (
+            <div
+              key={game.id}
+              onClick={() => handleRowClick(game.id)}
+              className="bg-white rounded-xl shadow p-4 cursor-pointer hover:bg-orange-50"
+            >
+              <div className="flex gap-4">
+                <img
+                  src={getThumbnailUrl(game)}
+                  alt={game.title}
+                  className="w-20 h-20 object-cover rounded-lg flex-shrink-0"
+                />
+
+                <div className="flex-1">
+                  <h2 className="text-lg font-bold text-orange-600">
+                    {game.title}
+                  </h2>
+
+                  <div className="mt-2 space-y-1 text-sm text-slate-600">
+                    <div className="flex items-center gap-2">
+                      <Clock className="h-4 w-4" />
+                      <span>{game.play_time}</span>
+                    </div>
+
+                    <div className="flex items-center gap-2">
+                      <Users className="h-4 w-4" />
+                      <span>{game.player_count}</span>
+                    </div>
+
+                    {/* 難易度：ラベルを星の左に */}
+                    <div className="flex items-center gap-2">
+                      <span className="text-xs text-slate-500">
+                        難易度
+                      </span>
+                      {renderStars(game.difficulty)}
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          ))}
+        </div>
+
+        {/* ===== PC：テーブルUI ===== */}
+        <div className="hidden md:block bg-white rounded-2xl shadow overflow-x-auto">
           <table className="w-full">
-            {/* PC用ヘッダー */}
-            <thead className="bg-orange-100 hidden md:table-header-group">
+            <thead className="bg-orange-100">
               <tr>
                 <th className="px-4 py-4"></th>
                 <th
@@ -212,59 +257,41 @@ export function GameListPage() {
 
             <tbody>
               {displayedGames.map((game) => (
-                <>
-                  {/* スマホ表示：タイトルのみ */}
-                  <tr
-                    key={game.id}
-                    onClick={() => handleRowClick(game.id)}
-                    className="md:hidden border-b hover:bg-orange-50"
-                  >
-                    <td className="px-4 py-4">
-                      <div className="text-lg font-bold text-orange-600">
-                        {game.title}
-                      </div>
-                    </td>
-                  </tr>
+                <tr
+                  key={game.id}
+                  onClick={() => handleRowClick(game.id)}
+                  className="hover:bg-orange-50 cursor-pointer"
+                >
+                  <td className="px-4 py-4">
+                    <img
+                      src={getThumbnailUrl(game)}
+                      alt={game.title}
+                      className="w-16 h-16 object-cover rounded-lg"
+                    />
+                  </td>
 
-                  {/* PC表示：フル情報 */}
-                  <tr
-                    key={`${game.id}-desktop`}
-                    onClick={() => handleRowClick(game.id)}
-                    className="hidden md:table-row hover:bg-orange-50 cursor-pointer"
-                  >
-                    <td className="px-4 py-4">
-                      <img
-                        src={getThumbnailUrl(game)}
-                        alt={game.title}
-                        className="w-16 h-16 object-cover rounded-lg"
-                      />
-                    </td>
+                  <td className="px-4 py-4 font-bold text-orange-600">
+                    {game.title}
+                  </td>
 
-                    <td className="px-4 py-4">
-                      <div className="text-lg font-bold text-orange-600">
-                        {game.title}
-                      </div>
-                    </td>
+                  <td className="px-4 py-4 whitespace-nowrap">
+                    {game.play_time}
+                  </td>
 
-                    <td className="px-4 py-4 whitespace-nowrap">
-                      {game.play_time}
-                    </td>
+                  <td className="px-4 py-4 whitespace-nowrap">
+                    {game.player_count}
+                  </td>
 
-                    <td className="px-4 py-4 whitespace-nowrap">
-                      {game.player_count}
-                    </td>
+                  <td className="px-4 py-4">
+                    {renderStars(game.difficulty)}
+                  </td>
 
-                    <td className="px-4 py-4">
-                      {renderStars(game.difficulty)}
-                    </td>
-
-                    <td className="px-4 py-4 hidden lg:table-cell">
-                      <p className="text-sm text-slate-600 max-w-xs truncate">
-                        {game.summary}
-                      </p>
-                    </td>
-                  </tr>
-                </>
+                  <td className="px-4 py-4 hidden lg:table-cell">
+                    <p className="text-sm text-slate-600 max-w-xs truncate">
+                      {game.summary}
+                    </p>
+                  </td>
+                </tr>
               ))}
             </tbody>
           </table>
