@@ -10,13 +10,9 @@ import {
 } from "lucide-react";
 import { supabase } from "../lib/supabase";
 import { Game } from "../types/game";
-
 type SortKey = "title" | "play_time" | "player_count" | "difficulty";
 type SortDirection = "asc" | "desc";
 
-/* =====================
-   Component
-===================== */
 export function GameListPage() {
   const navigate = useNavigate();
 
@@ -34,16 +30,9 @@ export function GameListPage() {
   useEffect(() => {
     const fetchGames = async () => {
       const { data, error } = await supabase.from("games").select("*");
-
-      if (error) {
-        console.error("Supabase error:", error);
-      } else {
-        setGames(data ?? []);
-      }
-
+      if (!error) setGames(data ?? []);
       setLoading(false);
     };
-
     fetchGames();
   }, []);
 
@@ -69,7 +58,6 @@ export function GameListPage() {
 
     filtered.sort((a, b) => {
       let comparison = 0;
-
       switch (sortKey) {
         case "title":
           comparison = a.title.localeCompare(b.title, "ja");
@@ -84,7 +72,6 @@ export function GameListPage() {
           comparison = a.player_count.localeCompare(b.player_count);
           break;
       }
-
       return sortDirection === "asc" ? comparison : -comparison;
     });
 
@@ -97,12 +84,8 @@ export function GameListPage() {
   );
 
   /* =====================
-     その他
+     util
   ===================== */
-  const handleRowClick = (gameId: string) => {
-    navigate(`/games/${gameId}`);
-  };
-
   const renderStars = (difficulty: number) => (
     <div className="flex gap-1">
       {[1, 2, 3, 4, 5].map((star) => (
@@ -118,20 +101,14 @@ export function GameListPage() {
     </div>
   );
 
-  const getThumbnailUrl = (game: Game) => {
-    if (game.image_urls && game.image_urls.length > 0) {
-      return game.image_urls[0];
-    }
-    return "https://placehold.co/100x100?text=No+Image";
-  };
+  const getThumbnailUrl = (game: Game) =>
+    game.image_urls?.[0] ??
+    "https://placehold.co/200x200?text=No+Image";
 
   if (loading) {
     return <div className="p-12 text-center">読み込み中...</div>;
   }
 
-  /* =====================
-     JSX
-  ===================== */
   return (
     <div className="min-h-screen bg-gradient-to-b from-orange-50 via-amber-50 to-yellow-50">
       {/* Header */}
